@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Laravel service
+  laravel-app:
+    build:
+      context: ./ominimo-backend
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./ominimo-backend:/var/www
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=ominimo_database
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    networks:
+      - laravel-network
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: >
+      sh -c "composer install && php artisan migrate:fresh --seed && php artisan serve --host=0.0.0.0 --port=8000"
+
+  # MySQL service (for Laravel)
+  db:
+    image: mysql:5.7
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: ominimo_database
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - laravel-network
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # React service
+  react-app:
+    build:
+      context: ./ominimo-frontend
+      dockerfile: Dockerfile
+    container_name: react-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - laravel-network
+    volumes:
+      - ./ominimo-frontend:/app
+    depends_on:
+      - laravel-app
+
+networks:
+  laravel-network:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
