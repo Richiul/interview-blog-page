@@ -30,6 +30,9 @@ COPY . /var/www
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www
 
+# Create .env file from .env.example
+RUN cp .env.example .env
+
 # Install Laravel dependencies
 RUN composer install
 
