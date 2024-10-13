@@ -1,4 +1,3 @@
-
 # Interview Blog Page
 
 This project consists of a blog page application with separate frontend and backend components. The application can be easily set up and run using Docker.
@@ -82,11 +81,3 @@ The application should now be running. You can access it in your browser at `htt
   ```bash
   docker-compose build --no-cache
   ```
-
-## Troubleshooting
-
-If you encounter any issues, make sure you have the required dependencies installed and that the `.env` file is configured correctly.
-
-## License
-
-This project is licensed under the MIT License.
